@@ -1,0 +1,18 @@
+COLUMN_LABEL,DESCRIPTION,TYPE,VALUES
+SUBJECT,Participant ID,TEXT,
+VISIT,Visit,CATEGORICAL,See Neuroinformatics Dictionaries
+NIBS_SYNTHDATA_SITE,Site of data acquisition,CATEGORICAL,See Neuroinformatics Dictionaries
+NIBS_SYNTHDATA_DATE,Date of administration,DATE,
+AGE,Computed age,NUMERIC,
+SEX,Sex,CATEGORICAL,Female; Male; Unknown; Unspecified. Unspecified indicates that a medical differentiation of sex has not yet been made.  Unknown indicates that the sex is not known or is missing
+NIHSS,Total NIH stroke scale score,NUMERIC,Possible range: 0-42 by integers
+APOE_GENOTYPE,Calculated APOE genotype based on the allele calls at APOE rs429358 and rs7412,CATEGORICAL,E22 = E2/2; E32 = E3/2; E33 = E3/3; E42 = E4/2; E43 = E4/3; E44 = E4/4
+MAPT_DIPLOTYPE,MAPT diplotype comprised of the haplotype of each MAPT allele based on the nucleotide calls at rs1800547,CATEGORICAL,H1H1 = H1/H1 Diplotype; H1H2 = H1/H2 Diplotype; H2H2 = H2/H2 Diplotype
+TMT_A_sec,Time to complete Trail Making Test part A,NUMERIC,0-180 seconds
+TMT_B_sec,Time to complete Trail Making Test part B,NUMERIC,0-300 seconds
+Stroop_color_sec,Time to complete condition 1: color naming,NUMERIC,0-90 seconds
+Stroop_word_sec,Time to complete condition 2: word reading,NUMERIC,0-90 seconds
+Stroop_inhibit_sec,Time to complete condition 3: inhibition,NUMERIC,0-180 seconds
+Stroop_switch_sec,Time to complete condition 4: inhibition/switching,NUMERIC,0-180 seconds
+NAGM_PERCENT,Percentage of Grey Matter Volume to Total Intracranial Volume,NUMERIC,Real number between 0 and 100
+NAWM_PERCENT,Percentage of White Matter Volume to Total Intracranial Volume,NUMERIC,Real number between 0 and 100

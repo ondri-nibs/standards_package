@@ -1,0 +1,7 @@
+SUBJECT,VISIT,NIBS_SYNTHDATA_SITE,NIBS_SYNTHDATA_DATE,MISSING_CODE,DESCRIPTION
+OND01_SYN_0148,01,SYN,M_VR,M_VR,Did not participate in these platforms at this visit.
+OND01_SYN_0149,01,SYN,2020MAY30,M_TE,Harddrive at recruitment site was corrupted; all data lost.
+OND01_SYN_0150,01,SYN,M_OTHER,M_OTHER,Participant did not return emails or phone calls.
+OND01_SYN_0151,01,SYN,2020MAY30,M_VR,Did not participate in these platforms at this visit.
+OND01_SYN_0152,01,SYN,2020MAY30,M_CB,Assessment not completed due to cognitive impairment as a result of disease.
+OND01_SYN_0153,01,SYN,2020MAY30,M_NP,Participant was recruited after baseline; see subsequent visits.

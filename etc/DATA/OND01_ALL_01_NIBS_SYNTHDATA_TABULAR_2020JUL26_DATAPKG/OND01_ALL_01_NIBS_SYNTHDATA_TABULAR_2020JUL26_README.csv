@@ -1,0 +1,5 @@
+FILE,DESCRIPTION
+OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_DATA.csv,Synthetic data (SYNTHDATA) generated from ONDRI data for illustrative purposes (see Methods document)
+OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_DICT.csv,Data dictionary for SYNTHDATA
+OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_MISSING.csv,MISSING file to indicate participants with entirely missing data
+OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_METHODS.pdf,METHODS document that contains details about how the data were curated

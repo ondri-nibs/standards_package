@@ -1,0 +1,51 @@
+Package: ondristandards
+Type: Package
+Title: Data checks for ONDRI Standards
+Version: 0.9.2
+Author: Logan Lim, Jedid Ahn
+Maintainer: Derek Beaton <dbeaton@research.baycrest.org>
+Description: Package for checking data standards in ONDRI.
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Imports: 
+    readr,
+    fs,
+    methods,
+    stringi,
+    xfun
+Collate: 
+    'CheckResult.R'
+    'checkColumnLabels.R'
+    'checkColumnNameSyntax.R'
+    'checkDateFormat.R'
+    'checkDirNames.R'
+    'checkDirStructure.R'
+    'checkEncoding.R'
+    'checkForBlankCells.R'
+    'checkForColumnNameDuplicates.R'
+    'checkForCommas.R'
+    'checkForCompressedFiles.R'
+    'checkForDuplicateFileNames.R'
+    'checkForEncapsulation.R'
+    'checkForFileTypes.R'
+    'checkForIDOverlap.R'
+    'checkForRaggedRows.R'
+    'checkForSpecialCharacters.R'
+    'checkForSpecialValues.R'
+    'checkForWhiteSpaces.R'
+    'checkM_Pattern.R'
+    'checkMissingCodes.R'
+    'checkNumOfCharacters.R'
+    'compareDICTColumnLabels.R'
+    'compareParticipantFileNames.R'
+    'compareREADMEFileNames.R'
+    'convertDataFrame.R'
+    'test_check.R'
+VignetteBuilder: knitr

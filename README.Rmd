@@ -1,0 +1,483 @@
+---
+title: "README"
+author: "Logan Lim, Jedid Ahn, & Derek Beaton."
+date: "Updated as of `r format(Sys.Date(), format = '%B %d, %Y')`."
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ondristandards)
+```
+
+# ONDRI Standards Package
+
+An R package with functions for checking standards on an ONDRI data package.
+
+<br>
+
+* Install [R](https://cran.r-project.org/) first and then [RStudio](https://rstudio.com/products/rstudio/download/). Please choose the correct installer carefully as it will depend on your computer's operating system.
+
+<br>
+
+* Download and install the package directly with the following lines of code:
+```
+  if (!require("devtools")){
+    install.packages("devtools")
+  }
+  devtools::install_github(repo = "ondri-nibs/ondri_standards_package")
+```
+If you get the following message in your RStudio console, please type 3.
+<br><br>
+<img src='etc/package-update.png'>
+
+<br>
+<hr>
+
+# Glossary
+
+Below is a convenient and comprehensive list of the checks available in this package. It includes the name of the function that looks like `checkColumnLabels`, and is immediately followed by a brief definition.
+
+
+
+`checkColumnLabels(dictDF, dataDF)`: Check whether a DICT data frame's column labels match in exact order with the column names in the DATA data frame, and that no column labels are duplicated.
+
+`checkColumnNameSyntax(df)`: Check data frame for proper column name syntax.
+
+`checkDateFormat(dates)`: Check whether an input character vector contains valid date format YYYYMMMDD.
+
+`checkDirNames(dirNames)`: Check that directory names use alphanumerics and underscores, and make sure first character is not a digit or underscore.
+
+`checkDirStructure(baseDir, dirStructure, recursive = T, exact = F)`: Check whether or not directory matches specified structure. Also checks a specified set of names in a directory against the list.files output.
+
+`checkEncoding(filePath)`: Check whether a tabular csv file is encoded in the broadly accepted formats of ASCII or UTF-8.
+
+`checkForBlankCells(df)`: Check data frame for blank cells and NA.
+
+`checkForColumnNameDuplicates(df)`: Check data frame for duplicate column names (case insensitive).
+
+`checkForCommas(df)`: Check data frame for commas.
+
+`checkForCompressedFiles(dirPath)`: Check if a directory contains compressed files.
+
+`checkForDuplicateFileNames(dirPath)`: Check non-tabular directory for duplicate files in different leveled folders, such as duplicate file names in level 1 and level 2.
+
+`checkForEncapsulation(df)`: Check data frame for properly closed quotes.
+
+`checkForFileTypes(fileExt, dirPath, recursive = F)`: Check for specific file types in directories.
+
+`checkForIDOverlap(df1, df2)`: Check for participant ID overlap between 2 data frames. In ONDRI case, the participant IDs in the DATA and MISSING files should be checked for potential overlap.
+
+`checkForRaggedRows(filePath)`: Check whether a tabular csv file contains ragged rows.
+
+`checkForSpecialCharacters(df)`: Check for special characters in a data frame.
+
+`checkForSpecialValues(filePath)`: Check whether a tabular csv file contains special values such as NaN (not a number), Inf (infinity), -Inf (negative infinity), or NULL (no value).
+
+`checkForWhiteSpaces(df)`: Check for leading or trailing whitespaces in a data frame.
+
+`checkM_Pattern(df)`: Check the ^M_ pattern in a data frame and count the number of occurrences of each unique code.
+
+`checkMissingCodes(dataVec, validMissingCodes = c("M_CB", "M_PI", "M_VR", "M_AE", "M_DNA", "M_TE", "M_NP", "M_ART", "M_TBC", "M_OTHER"))`: Check whether a vector contains valid missing codes wherever a cell starts with "M_".
+
+`checkNumOfCharacters(df, k = 200)`: Check whether a data frame contains less than k characters in each cell.
+
+`compareDICTColumnLabels(dictDF, dataDF)`: Compare column labels in the DICT data frame and the column names in the DATA data frame.
+
+`compareParticipantFileNames(fileNamesVec, dirPath)`: Compare a vector of file names (such as the FILENAME column in the level 3 FILELIST file) and the literal contents of a directory (such as the level 3 DATAFILES folder) and check whether they match exactly.
+
+`compareREADMEFileNames(readmeDF, dirPath)`: Compare the file names in the README file and the files in the directory containing the README file.
+
+<br>
+<hr>
+
+
+# Preamble
+To test out the standards package functions yourself, please download the toy data sets from the `ondri-nibs/toy_data` repository on GitHub: https://github.com/ondri-nibs/toy_data
+
+Click on "Download ZIP" as shown below and then unzip into your desired folder.
+<br><br>
+<img src='etc/toy_data-download.png'>
+
+<br>
+
+Once unzipped, please retrieve the full directory paths of both the tabular and non-tabular data packages. Examples of both directory paths are provided below. Please note that slashes between directories could be different for different operating systems.
+
+**For convenience** we also provide a copy of those data packages in this repository under `./etc/DATA/`. This also helps ensure that we can automatically knit the RMarkdown file.
+
+```{r}
+tabular_dir_path <- "./etc/DATA/OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_DATAPKG"
+
+nontabular_dir_path <- "./etc/DATA/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_DATAPKG"
+```
+
+<br>
+
+Once the directory paths have been initialized, you can retrieve all files of the tabular data package using the code below.
+```{r}
+DATA_FILE <- paste0(tabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_DATA.csv")
+DATA_DF <- read.csv(DATA_FILE, stringsAsFactors = FALSE)
+
+DICT_FILE <- paste0(tabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_DICT.csv")
+DICT_DF <- read.csv(DICT_FILE, stringsAsFactors = FALSE)
+
+README_FILE <- paste0(tabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_README.csv")
+README_DF <- read.csv(README_FILE, stringsAsFactors = FALSE)
+
+MISSING_FILE <- paste0(tabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_MISSING.csv")
+MISSING_DF <- read.csv(MISSING_FILE, stringsAsFactors = FALSE)
+
+```
+
+<br>
+
+An example of reading in relevant files from the non-tabular data package is provided below. The variable endings represent the level that the file resides in.
+```{r}
+DATA_FILE_1 <- paste0(nontabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_DATA.csv")
+DATA_DF_1 <- read.csv(DATA_FILE_1, stringsAsFactors = FALSE)
+
+DICT_FILE_1 <- paste0(nontabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_DATA.csv")
+DICT_DF_1 <- read.csv(DICT_FILE_1, stringsAsFactors = FALSE)
+
+README_FILE_1 <- paste0(nontabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_README.csv")
+README_DF_1 <- read.csv(README_FILE_1, stringsAsFactors = FALSE)
+
+MISSING_FILE_1 <- paste0(nontabular_dir_path, "/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_MISSING.csv")
+MISSING_DF_1 <- read.csv(MISSING_FILE_1, stringsAsFactors = FALSE)
+
+README_FILE_2 <- paste0(nontabular_dir_path, "/SABRE_NIIs/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_SABRE_NIIs_2020JUL26_README.csv")
+README_DF_2 <- read.csv(README_FILE_2, stringsAsFactors = FALSE)
+
+MISSING_FILE_2 <- paste0(nontabular_dir_path, "/SABRE_NIIs/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_SABRE_NIIs_2020JUL26_MISSING.csv")
+MISSING_DF_2 <- read.csv(MISSING_FILE_2, stringsAsFactors = FALSE)
+
+FILELIST_FILE_3 <- paste0(nontabular_dir_path, "/SABRE_NIIs/DATAFILES/OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_SABRE_NIIs_2020JUL26_FILELIST.csv")
+FILELIST_DF_3 <- read.csv(FILELIST_FILE_3, stringsAsFactors = FALSE)
+```
+
+<br>
+<hr>
+
+# Introduction
+Each check function returns an S4 object of type CheckResult. It contains the following slots that can be accessed with '@':
+
+* name
+  - character. Name of the check that was performed.
+* pass
+  - logical. True if the check passes, false otherwise.
+* msg
+  - character. Associated messages returned from a check.
+* data
+  - list. Associated data returned from a check.
+
+<br>
+
+For example, if `check.res` is a CheckResult object, then we can access the `msg` with `check.res@msg`. However, to retrieve the data object as a data.frame, it is recommended to use `has.data(check.res)` and `get.data(check.res)` to access data from a CheckResult object, since some CheckResult subclasses may implement their own means of returning data to a user in a more sensible way. However, by default, `get.data` will return the `CheckResult@data` as a `data.frame`. If accessing the data object directly better suits your purposes, you are free to do so.
+```{r eval=FALSE}
+pkg_prefix <- "OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_"
+checkDirStructure(baseDir = tabular_dir_path,
+                  dirStructure = paste0(pkg_prefix, c("DATA.csv", "DICT.csv", "README.csv", "MISSING.csv")),
+                  recursive = TRUE)
+
+```
+
+<br>
+
+If you wish to perform multiple checks at once, you can string them together using `combineChecks()`.
+```{r}
+checkValues <- function(dataDF) {
+  check.res <- 
+    combineChecks(
+      checkColumnNameSyntax(df = dataDF),
+      checkForColumnNameDuplicates(df = dataDF),
+      checkForBlankCells(df = dataDF),
+      # Check for commas in data frame
+      checkForCommas(df = dataDF),
+      checkForEncapsulation(df = dataDF[sapply(dataDF, class) == 'character']),
+      # Check for leading or trailing white spaces
+      checkForWhiteSpaces(df = dataDF[sapply(dataDF, class) == 'character'])
+  )
+  return (check.res)
+}
+
+checkValues(DATA_DF)
+```
+
+<br>
+<hr>
+
+# Preliminary checks
+The following set of functions check whether a tabular file is formatted correctly and can be read in using R. These functions should be run on **all tabular files in a data package** before proceeding to individual file checks. Otherwise, the individual file checks may output conflicting information.
+
+<br>
+
+The first core preliminary function checks file encoding to ensure that it is in UTF-8 and/or ASCII format. `checkEncoding()` will also provide location of encoding violations.
+```{r}
+combineChecks(checkEncoding(filePath = DATA_FILE), 
+              checkEncoding(filePath = DICT_FILE), 
+              checkEncoding(filePath = README_FILE),
+              checkEncoding(filePath = MISSING_FILE))
+```
+
+<br>
+
+The second core preliminary function searches for ragged rows in the tabular file. However, unlike the encoding check, `checkForRaggedRows()` cannot provide location of ragged row violations. This is because different violations can lead to ragged rows, which include the following:
+
+* Misplaced comma
+* A special and prohibited character such as #
+* Sequential quotes in a row of data
+
+<br>
+
+Thus, the following functions should be run all together in case a ragged row violation needs to be traced.
+```{r}
+combineChecks(checkForRaggedRows(filePath = DATA_FILE), 
+              checkForCommas(DATA_DF), 
+              checkForSpecialCharacters(DATA_DF))
+
+combineChecks(checkForRaggedRows(filePath = DICT_FILE), 
+              checkForCommas(DICT_DF), 
+              checkForSpecialCharacters(DICT_DF))
+
+combineChecks(checkForRaggedRows(filePath = README_FILE), 
+              checkForCommas(README_DF), 
+              checkForSpecialCharacters(README_DF))
+
+combineChecks(checkForRaggedRows(filePath = MISSING_FILE), 
+              checkForCommas(MISSING_DF), 
+              checkForSpecialCharacters(MISSING_DF))
+
+# Function under development
+# combineChecks(checkForSequentialQuotes(DATA_DF), 
+#               checkForSequentialQuotes(DICT_DF), 
+#               checkForSequentialQuotes(README_DF),
+#               checkForSequentialQuotes(MISSING_DF))
+
+```
+
+<br>
+<hr>
+
+# Structure checks
+The following set of functions check whether the data package directory adheres to all required standards. Inputs that are required include the directory/folder path of the data package, which must be located on your desktop. As mentioned previously, please ensure that the directory path contains forward slashes only.
+
+All functions listed below are unique to the directory structure, and should not be utilized for any tabular files.
+
+<br>
+
+The most commonly used functions are `checkForFileTypes()` and `checkForCompressedFiles()`, which can check whether any unwanted (and potentially sensitive) files exist in the data package directory. File types in the `.gitignore` file should be utilized for the former, while the latter looks specifically for compressed (ZIP) files. If checking for several file types, `checkForFileTypes()` should be run using `sapply()`, as shown below.
+```{r}
+file_types <- c("csv", "txt", "rda", "rdata", "rds", "html", "xlm", "xlmx")
+
+sapply(file_types[1:2], checkForFileTypes, tabular_dir_path)
+
+checkForCompressedFiles(tabular_dir_path)
+```
+
+<br>
+
+The last structure check for tabular data packages confirms whether all required files actually exist in the directory.
+```{r}
+pkg_prefix <- "OND01_ALL_01_NIBS_SYNTHDATA_TABULAR_2020JUL26_"
+checkDirStructure(baseDir = tabular_dir_path, 
+                  dirStructure = paste0(pkg_prefix, c("DATA.csv", "DICT.csv", "README.csv", "MISSING.csv")))
+```
+
+<br>
+
+The three functions mentioned for tabular data packages can also be run on non-tabular data packages. `checkForFileTypes()` and `checkDirStructure()` should contain another parameter that sets `recursive` to `TRUE` so that subdirectories can be parsed. `checkForCompressedFiles()` is not a recursive search as level 2 and 3 directories can contain compressed files, which consist of participant files.
+```{r}
+sapply(file_types[1:2], checkForFileTypes, nontabular_dir_path, recursive = TRUE)
+
+checkForCompressedFiles(nontabular_dir_path)
+
+pkg_prefix <- "OND01_ALL_01_NIBS_SYNTHDATA_NONTABULAR_2020JUL26_"
+checkDirStructure(baseDir = nontabular_dir_path,
+                  dirStructure = paste0(pkg_prefix, c("DATA.csv", "DICT.csv", "README.csv", "MISSING.csv")), 
+                  recursive = TRUE)
+```
+
+<br>
+
+The remaining two structure checks are solely for non-tabular data packages. Please note that preprocessing is required for `checkDirNames()` to aggregate directory names only.
+```{r}
+checkForDuplicateFileNames(nontabular_dir_path)
+
+dir_names <- sapply(strsplit(list.dirs(nontabular_dir_path), split = "/"), tail, 1)
+checkDirNames(dir_names)
+```
+
+<br>
+<hr>
+
+# DATA checks
+The following set of functions check whether the DATA file adheres to all required standards. Inputs that are required for DATA checks include the DATA data frame itself (read in using R) and the DATA file path. Before proceeding to function usage, please make note of the following two points:
+
+1) **The standards package does not contain package specific checks that currently exist in the ONDRI Standards ShinyApp.**
+2) **All functions mentioned are compatible with a MISSING file, as long as a MISSING data frame and MISSING file path are available.**
+
+<br>
+
+The following two functions examine the column names in the DATA file and should be run first (and pass) before moving on to additional checks.
+```{r}
+checkColumnNameSyntax(DATA_DF)
+
+checkForColumnNameDuplicates(DATA_DF)
+```
+
+<br>
+
+The following five functions are unique to the DATA (and MISSING) file. Please note the parameter type for each function, as providing input with an incorrect type may lead to conflicting messages (or an outright error).
+
+* `checkForSpecialValues()`: DATA file path
+* `checkDateFormat()`: Vector of dates in character class/DATE column
+* `checkM_Pattern()`: DATA data frame
+* `checkForIDOverlap()`: Two data frames, such as DATA_DF and MISSING_DF
+* `checkMissingCodes()`: Vector of data/DATA file column
+
+```{r}
+checkForSpecialValues(filePath = DATA_FILE)
+
+checkDateFormat(dates = DATA_DF$NIBS_SYNTHDATA_DATE)
+
+checkM_Pattern(df = DATA_DF)
+
+checkForIDOverlap(df1 = DATA_DF, df2 = MISSING_DF)
+```
+
+<br>
+
+If checking several columns for `checkMissingCodes()`, please use `sapply()` and cast columns to character class as shown below.
+```{r}
+# Single column.
+checkMissingCodes(dataVec = DATA_DF$APOE_GENOTYPE)
+
+# Multiple columns.
+DATA_DF_CHAR <- as.data.frame(sapply(DATA_DF[ , c(5:7)], as.character))
+sapply(DATA_DF_CHAR, checkMissingCodes)
+```
+
+<br>
+
+The remaining checks for the DATA file are generic to all tabular files.
+```{r}
+checkForBlankCells(DATA_DF)
+checkNumOfCharacters(DATA_DF)
+checkForWhiteSpaces(DATA_DF)
+checkForEncapsulation(DATA_DF)
+```
+
+<br>
+<hr>
+
+# DICT checks
+The following set of functions check whether the DICT file adheres to all required standards. The only inputs required for DICT checks are the DICT and DATA data frames (read in using R).
+
+<br>
+
+`compareDICTColumnLabels()` is one of two functions unique to the DICT file, which will compare the column labels in the DICT file and the column names in the DATA file. The check will provide information on which column labels are missing from the DICT file and/or which column names are missing from the DATA file.
+```{r}
+compareDICTColumnLabels(DICT_DF, DATA_DF)
+```
+
+<br>
+
+`checkColumnLabels()` is the second function unique to the DICT file, which also performs a comparison of DICT column labels to DATA column names. However, unlike `compareDICTColumnLabels()`, it provides more context by checking specifically for the following three cases:
+
+1) Whether the number of column labels equals the number of column names.
+2) Whether the column labels are in exact order with the column names.
+3) Whether any column labels are duplicated (case insensitive).
+
+```{r}
+checkColumnLabels(DICT_DF, DATA_DF)
+```
+
+<br>
+
+The distinction between checks is evident when we manipulate the column names in the DATA file to a different order. Although `compareDICTColumnLabels()` passes, `checkColumnLabels()` now fails.
+```{r}
+# Manipulate order of column names.
+colnames(DATA_DF) <- colnames(DATA_DF)[c(1:5, 7, 6, 8:17)]
+
+compareDICTColumnLabels(DICT_DF, DATA_DF)
+checkColumnLabels(DICT_DF, DATA_DF)
+```
+
+<br>
+
+On the other hand, when we add a duplicate column label (in lowercase format) to the DICT file, both checks fail. However, `checkColumnLabels()` provides more details on the source of the error, whereas utilizing `compareDICTColumnLabels()` requires further investigation.
+```{r}
+# Add a duplicate column label (in lowercase format).
+duplicate_label <- data.frame(DICT_DF[17,], stringsAsFactors = FALSE)
+DICT_DF <- rbind(DICT_DF, duplicate_label)
+DICT_DF$COLUMN_LABEL[18] <- tolower(DICT_DF$COLUMN_LABEL[13])
+
+compareDICTColumnLabels(DICT_DF, DATA_DF)
+checkColumnLabels(DICT_DF, DATA_DF)
+```
+
+<br>
+
+The remaining checks for the DICT file are generic to all tabular files.
+```{r}
+checkForBlankCells(DICT_DF)
+checkNumOfCharacters(DICT_DF)
+checkForWhiteSpaces(DICT_DF)
+checkForEncapsulation(DICT_DF)
+```
+
+<br>
+<hr>
+
+# README checks
+The following set of functions check whether the README file adheres to all required standards. The only inputs required for README checks are the README data frame (read in using R) and the data package directory path.
+
+<br>
+
+`compareREADMEFileNames()` is the one function unique to the README file, which will compare the file names in the README file and the contents of the data package directory and check whether they match exactly. The check will provide information on which files are missing from the directory and/or which file names are missing from the README file.
+```{r}
+compareREADMEFileNames(README_DF, tabular_dir_path)
+```
+
+<br>
+
+The remaining checks for the README file are generic to all tabular files.
+```{r}
+checkForBlankCells(README_DF)
+checkNumOfCharacters(README_DF)
+checkForWhiteSpaces(README_DF)
+checkForEncapsulation(README_DF)
+```
+
+<br>
+<hr>
+
+# FILELIST checks
+The following set of functions check whether the FILELIST file **of a non-tabular data package** adheres to all required standards. The only inputs required for FILELIST checks are the FILELIST data frame (read in using R), the data package directory path, and the DATAFILES (level 3) directory path.
+
+<br>
+
+`compareParticipantFileNames()` is the one function unique to the FILELIST file, which will compare a vector of file names (such as the FILENAME column in the level 3 FILELIST file) and the literal contents of a directory (such as the level 3 DATAFILES folder), and check whether they match exactly. The check will provide information on which files are missing from the directory and/or which file names are missing from the vector of file names.
+```{r}
+compareParticipantFileNames(fileNamesVec = FILELIST_DF_3$FILENAME, 
+                            dirPath = paste0(nontabular_dir_path, "/SABRE_NIIs/DATAFILES"))
+```
+
+<br>
+
+You can also run the date format check on the DATE column of the FILELIST file.
+```{r}
+checkDateFormat(dates = FILELIST_DF_3$NIBS_SYNTHDATA_DATE)
+```
+
+
+<br>
+
+The remaining checks for the FILELIST file are generic to all tabular files.
+```{r}
+checkForBlankCells(FILELIST_DF_3)
+checkNumOfCharacters(FILELIST_DF_3)
+checkForWhiteSpaces(FILELIST_DF_3)
+checkForEncapsulation(FILELIST_DF_3)
+```
