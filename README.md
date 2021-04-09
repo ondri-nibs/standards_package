@@ -3,7 +3,7 @@ README
 Logan Lim, Jedid Ahn, & Derek Beaton.
 Updated as of April 09, 2021.
 
-# ONDRI Standards Package
+# ONDRI Standards R Package <img src='etc/ondri_standards_logo.png' align="right" height="139" />
 
 An R package with functions for checking standards on an ONDRI data
 package.
